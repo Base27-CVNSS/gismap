@@ -1,127 +1,105 @@
 (() => {
-  const entities = window.GISMAP_ENTITIES || [];
-  let scope = "all";
-  let stateFilter = "all";
-  let query = "";
-  let sort = "default";
+  const DATA = window.MAE_SYSTEMS || [];
+  const TYPE_LABEL = {WEBGIS:"WebGIS",GEOSPATIAL:"Không gian / SDI",MONITORING:"Giám sát",DATABASE:"CSDL",PORTAL:"Portal"};
+  let activeCat = "all";
+  let activeType = "all";
+  let keyword = "";
 
   const $ = s => document.querySelector(s);
   const $$ = s => [...document.querySelectorAll(s)];
-  const grid = $("#entityGrid");
-  const empty = $("#emptyState");
-  const search = $("#searchInput");
+  const grid = $("#logoGrid");
+  const register = $("#register");
+  const chips = $("#chips");
+  const search = $("#search");
   const dialog = $("#detailDialog");
-  const dialogContent = $("#dialogContent");
 
-  const stateOf = e => {
-    if (!e.links || !e.links.length) return "pending";
-    if (e.links.some(x => x.status === "verified")) return "verified";
-    return "linked";
-  };
-
-  const stateLabel = s => ({pending:"Chờ URL", linked:"Có link", verified:"Đã kiểm chứng"})[s] || s;
-  const scopeLabel = s => ({all:"Tất cả đầu mối", ministry:"14 Bộ", agency:"3 cơ quan ngang Bộ", committee:"8 Ủy ban Quốc gia", locality:"34 tỉnh, thành phố"})[s] || "Registry";
+  const esc = (v="") => String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const host = url => { try { return new URL(url).hostname; } catch { return url; } };
 
   function filtered(){
-    let rows = entities.filter(e => scope === "all" || e.scope === scope);
-    rows = rows.filter(e => stateFilter === "all" || stateOf(e) === stateFilter || (stateFilter === "linked" && e.links?.length));
-    const q = query.trim().toLocaleLowerCase("vi");
-    if(q) rows = rows.filter(e => [e.name,e.id,e.kind,e.level].join(" ").toLocaleLowerCase("vi").includes(q));
-    if(sort === "az") rows.sort((a,b)=>a.name.localeCompare(b.name,"vi"));
-    if(sort === "links") rows.sort((a,b)=>(b.links?.length||0)-(a.links?.length||0) || a.name.localeCompare(b.name,"vi"));
-    return rows;
+    const q = keyword.trim().toLocaleLowerCase("vi");
+    return DATA.filter(item => {
+      const catOk = activeCat === "all" || item.cat === activeCat;
+      const typeOk = activeType === "all" || item.type === activeType;
+      const text = [item.name,item.desc,item.cat,item.type,host(item.url)].join(" ").toLocaleLowerCase("vi");
+      return catOk && typeOk && (!q || text.includes(q));
+    });
+  }
+
+  function renderChips(){
+    const counts = {};
+    DATA.forEach(d => counts[d.cat]=(counts[d.cat]||0)+1);
+    const list = [{key:"all",label:"Tất cả",n:DATA.length},...Object.keys(counts).sort((a,b)=>a.localeCompare(b,"vi")).map(k=>({key:k,label:k,n:counts[k]}))];
+    chips.innerHTML = list.map(x=>`<button type="button" class="chip ${x.key===activeCat?"active":""}" data-cat="${esc(x.key)}">${esc(x.label)} · ${x.n}</button>`).join("");
+    $$(".chip").forEach(btn=>btn.addEventListener("click",()=>{activeCat=btn.dataset.cat;renderChips();render();}));
   }
 
   function render(){
     const rows = filtered();
-    $("#resultCount").textContent = rows.length;
-    $("#sectionTitle").textContent = scopeLabel(scope);
-    grid.innerHTML = rows.map(e => {
-      const state = stateOf(e);
-      const n = e.links?.length || 0;
-      return `<article class="entity-card" tabindex="0" role="button" data-id="${e.id}" data-state="${state}" aria-label="Mở ${esc(e.name)}">
-        <div class="entity-top">
-          <span class="entity-id">${esc(e.id)}</span>
-          <span class="entity-state"><i class="status-dot ${state}"></i>${stateLabel(state)}</span>
-        </div>
-        <h3>${esc(e.name)}</h3>
-        <div class="entity-meta">
-          <span>${esc(e.kind)} · ${esc(e.level)}</span>
-          <span class="entity-links">${n.toString().padStart(2,"0")} link</span>
-        </div>
-      </article>`;
-    }).join("");
-    empty.hidden = rows.length !== 0;
-    $$(".entity-card").forEach(card => {
-      const open = () => showDetail(card.dataset.id);
-      card.addEventListener("click", open);
-      card.addEventListener("keydown", e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); open(); }});
+    $("#count").textContent = rows.length;
+    $("#empty").hidden = rows.length !== 0;
+
+    grid.innerHTML = rows.map(item=>`
+      <article class="logo-cell" data-id="${item.id}" tabindex="0" role="button" aria-label="${esc(item.name)}" title="${esc(item.name)}">
+        <img src="${esc(item.img)}" alt="${esc(item.name)}" loading="lazy" onerror="this.parentElement.classList.add('no-img');this.remove()">
+        <span class="logo-cell__num">${item.id}</span>
+        <span class="logo-cell__type">${esc(TYPE_LABEL[item.type]||item.type)}</span>
+      </article>`).join("");
+
+    register.innerHTML = `
+      <div class="register-head"><div>Mã</div><div>Hệ thống</div><div>Lĩnh vực</div><div>Loại</div><div>Trạng thái</div></div>
+      ${rows.map(item=>`
+        <div class="register-row" data-id="${item.id}" tabindex="0" role="button">
+          <div class="reg-id">${item.id}</div>
+          <div class="reg-title"><b>${esc(item.name)}</b><span>${esc(host(item.url))}</span></div>
+          <div class="reg-field">${esc(item.cat)}</div>
+          <div><span class="type-badge ${item.type.toLowerCase()}">${esc(TYPE_LABEL[item.type]||item.type)}</span></div>
+          <div class="reg-status"><i></i>Chưa kiểm chứng</div>
+        </div>`).join("")}`;
+
+    $$("[data-id]").forEach(el=>{
+      const open=()=>openDetail(el.dataset.id);
+      el.addEventListener("click",open);
+      el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();open();}});
     });
   }
 
-  function esc(v=""){ return String(v).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
-
-  function showDetail(id){
-    const e = entities.find(x=>x.id===id);
-    if(!e) return;
-    const links = e.links || [];
-    dialogContent.innerHTML = `
-      <div class="dialog-kicker">${esc(e.id)} · ${esc(e.kind)}</div>
-      <h2 class="dialog-title">${esc(e.name)}</h2>
-      <div class="dialog-sub">${esc(e.level)} · ${links.length} nguồn WebGIS đã ghi nhận</div>
-      <div class="dialog-rule"></div>
-      ${links.length ? links.map(l=>`
-        <div class="link-row">
-          <div>
-            <h4>${esc(l.title || "WebGIS")}</h4>
-            <p>${esc(l.type || "WEBGIS")} · ${esc(l.status || "linked")} · checked ${esc(l.lastChecked || "—")}</p>
-          </div>
-          <a class="link-open" href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">MỞ ↗</a>
-        </div>`).join("") :
-        `<div class="no-links"><strong>Chưa gắn URL WebGIS.</strong><br>Registry đã sẵn sàng. Khi có link, chỉ cần thêm record vào <code>assets/js/data.js</code> theo schema chuẩn.</div>`}
-    `;
+  function openDetail(id){
+    const item = DATA.find(x=>x.id===id);
+    if(!item) return;
+    $("#dialogBody").innerHTML = `
+      <div class="dialog-banner"><img src="${esc(item.img)}" alt="" onerror="this.remove()"></div>
+      <div class="dialog-body">
+        <div class="dialog-tags"><span class="dialog-tag">${item.id}</span><span class="dialog-tag">${esc(TYPE_LABEL[item.type]||item.type)}</span><span class="dialog-tag">SEED DATA</span></div>
+        <h2>${esc(item.name)}</h2>
+        <p class="dialog-desc">${esc(item.desc)}</p>
+        <div class="dialog-meta">
+          <div><span>Lĩnh vực</span><b>${esc(item.cat)}</b></div>
+          <div><span>Tên miền</span><b>${esc(host(item.url))}</b></div>
+          <div><span>Kiểm chứng</span><b>Chưa thực hiện</b></div>
+          <div><span>Nguồn</span><b>Danh mục khởi tạo</b></div>
+        </div>
+        <div class="dialog-actions">
+          <button type="button" onclick="document.getElementById('detailDialog').close()">Đóng</button>
+          <a href="${esc(item.url)}" target="_blank" rel="noopener noreferrer">Mở nguồn ↗</a>
+        </div>
+      </div>`;
     dialog.showModal();
   }
 
-  function updateStats(){
-    const linkCount = entities.reduce((n,e)=>n+(e.links?.length||0),0);
-    const verifiedLinks = entities.reduce((n,e)=>n+(e.links||[]).filter(l=>l.status==="verified").length,0);
-    const linkedEntities = entities.filter(e=>(e.links?.length||0)>0).length;
-    $("#metricEntities").textContent = entities.length;
-    $("#metricLinks").textContent = linkCount;
-    $("#metricVerified").textContent = verifiedLinks;
-    $("#metricCoverage").textContent = Math.round(linkedEntities/entities.length*100)+"%";
-    $("#countAll").textContent = entities.length;
-    $("#countPending").textContent = entities.filter(e=>stateOf(e)==="pending").length;
-    $("#countLinked").textContent = entities.filter(e=>(e.links?.length||0)>0).length;
-    $("#countVerified").textContent = entities.filter(e=>stateOf(e)==="verified").length;
-  }
+  search.addEventListener("input",e=>{keyword=e.target.value;search.parentElement.classList.toggle("has-value",!!keyword);render();});
+  $("#clearSearch").addEventListener("click",()=>{keyword="";search.value="";search.parentElement.classList.remove("has-value");search.focus();render();});
+  $("#typeFilter").addEventListener("change",e=>{activeType=e.target.value;render();});
+  $("#dialogClose").addEventListener("click",()=>dialog.close());
+  dialog.addEventListener("click",e=>{if(e.target===dialog) dialog.close();});
+  document.addEventListener("keydown",e=>{if(e.key==="/" && document.activeElement!==search){e.preventDefault();search.focus();}});
 
-  $$(".scope-card").forEach(btn => btn.addEventListener("click", () => {
-    $$(".scope-card").forEach(x=>x.classList.remove("is-active"));
-    btn.classList.add("is-active"); scope = btn.dataset.scope; render();
-    document.querySelector("#registry").scrollIntoView({behavior:"smooth",block:"start"});
-  }));
-  $$(".rail-item").forEach(btn => btn.addEventListener("click", () => {
-    $$(".rail-item").forEach(x=>x.classList.remove("is-active"));
-    btn.classList.add("is-active"); stateFilter = btn.dataset.filter; render();
-  }));
-  search.addEventListener("input", e => { query = e.target.value; render(); });
-  $("#sortSelect").addEventListener("change", e => { sort = e.target.value; render(); });
-  $("#dialogClose").addEventListener("click", ()=>dialog.close());
-  dialog.addEventListener("click", e => { if(e.target === dialog) dialog.close(); });
-  document.addEventListener("keydown", e => {
-    if(e.key === "/" && document.activeElement !== search){ e.preventDefault(); search.focus(); }
-  });
-  $("#exportBtn").addEventListener("click", () => {
-    const payload = JSON.stringify({meta:window.GISMAP_META, entities}, null, 2);
-    const blob = new Blob([payload], {type:"application/json"});
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob); a.download = "gismap-registry.json"; a.click();
-    setTimeout(()=>URL.revokeObjectURL(a.href),500);
-  });
+  const geo = DATA.filter(x=>["WEBGIS","GEOSPATIAL","MONITORING"].includes(x.type)).length;
+  $("#statSystems").textContent=String(DATA.length).padStart(2,"0");
+  $("#statCats").textContent=String(new Set(DATA.map(x=>x.cat)).size).padStart(2,"0");
+  $("#statGeo").textContent=String(geo).padStart(2,"0");
+  $("#statVerified").textContent="00";
 
-  $("#buildDate").textContent = `Baseline ${window.GISMAP_META?.baseline || "2026-09-27"}`;
-  updateStats();
+  renderChips();
   render();
 })();
