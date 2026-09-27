@@ -3,139 +3,128 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="GISMAP — Danh bạ OSINT WebGIS công khai của cơ quan trung ương và 34 tỉnh, thành phố Việt Nam.">
-  <meta name="theme-color" content="#0b1118">
-  <title>GISMAP · Vietnam Public WebGIS OSINT Registry</title>
+  <meta name="description" content="GISMAP — hồ sơ OSINT các hệ thống thông tin, dữ liệu và WebGIS công khai của Bộ Nông nghiệp và Môi trường.">
+  <meta name="theme-color" content="#f5f6f8">
+  <title>GISMAP · Bộ Nông nghiệp và Môi trường</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/app.css">
 </head>
 <body>
-  <a class="skip-link" href="#registry">Bỏ qua điều hướng</a>
+  <a class="skip" href="#catalog">Đi tới danh mục</a>
 
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-mark" aria-hidden="true">G</div>
-      <div>
-        <strong>GISMAP</strong>
-        <span>PUBLIC WEBGIS OSINT REGISTRY</span>
-      </div>
-    </div>
-    <div class="topbar-meta">
-      <span class="live-dot"></span>
-      <span id="buildDate">Registry baseline</span>
-      <span class="kbd">/</span>
-      <span>Tìm kiếm</span>
+  <header class="sitebar">
+    <div class="sitebar__inner">
+      <a class="brand" href="./" aria-label="GISMAP">
+        <span class="brand__mark">G</span>
+        <span><b>GISMAP</b><small>PUBLIC WEBGIS OSINT</small></span>
+      </a>
+      <nav class="sitebar__nav" aria-label="Điều hướng">
+        <a class="active" href="./">Bộ ngành</a>
+        <span>Địa phương</span>
+        <span>Ủy ban</span>
+      </nav>
+      <div class="sitebar__status"><i></i> Registry 01 / 14</div>
     </div>
   </header>
 
-  <main>
+  <main class="wrap">
+    <div class="breadcrumb">GISMAP <span>/</span> Bộ ngành <span>/</span> MAE</div>
+
     <section class="hero">
-      <div class="hero-copy">
-        <p class="eyebrow">VIETNAM · OPEN-SOURCE GEOSPATIAL INTELLIGENCE</p>
-        <h1>Danh bạ WebGIS công khai<br>theo cơ quan & địa phương</h1>
-        <p class="lead">Khung chuẩn để thu thập, kiểm chứng và theo dõi các cổng bản đồ, WebGIS, dashboard không gian và dịch vụ dữ liệu công khai. Giai đoạn này thiết lập taxonomy và registry; URL WebGIS sẽ được bổ sung dần.</p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#registry">Mở registry</a>
-          <button class="btn" id="exportBtn" type="button">Xuất JSON</button>
-        </div>
+      <div>
+        <div class="eyebrow">HỒ SƠ OSINT · BỘ 10</div>
+        <h1>Bộ Nông nghiệp<br>và Môi trường</h1>
+        <p>Danh mục khởi tạo các hệ thống thông tin, cơ sở dữ liệu, cổng không gian và WebGIS công khai. Giao diện ưu tiên tra cứu nhanh, kiểm chứng nguồn và mở rộng dữ liệu theo từng lĩnh vực.</p>
       </div>
-      <div class="hero-panel" aria-label="Tóm tắt registry">
-        <div class="metric"><span class="metric-value" id="metricEntities">59</span><span class="metric-label">Đầu mối</span></div>
-        <div class="metric"><span class="metric-value" id="metricLinks">0</span><span class="metric-label">WebGIS URLs</span></div>
-        <div class="metric"><span class="metric-value" id="metricVerified">0</span><span class="metric-label">Đã kiểm chứng</span></div>
-        <div class="metric"><span class="metric-value" id="metricCoverage">0%</span><span class="metric-label">Độ phủ link</span></div>
-      </div>
-    </section>
-
-    <section class="scope-grid" aria-label="Phạm vi danh mục">
-      <button class="scope-card is-active" data-scope="all" type="button"><span class="scope-no">59</span><span class="scope-title">Toàn bộ</span><span class="scope-sub">Registry quốc gia</span></button>
-      <button class="scope-card" data-scope="ministry" type="button"><span class="scope-no">14</span><span class="scope-title">Bộ</span><span class="scope-sub">Cơ quan trung ương</span></button>
-      <button class="scope-card" data-scope="agency" type="button"><span class="scope-no">03</span><span class="scope-title">Cơ quan ngang Bộ</span><span class="scope-sub">Cơ quan trung ương</span></button>
-      <button class="scope-card" data-scope="committee" type="button"><span class="scope-no">08</span><span class="scope-title">Ủy ban Quốc gia</span><span class="scope-sub">Danh mục làm việc</span></button>
-      <button class="scope-card" data-scope="locality" type="button"><span class="scope-no">34</span><span class="scope-title">Địa phương</span><span class="scope-sub">28 tỉnh · 6 thành phố</span></button>
-    </section>
-
-    <section class="registry-shell" id="registry">
-      <aside class="rail">
-        <div class="rail-block">
-          <span class="rail-label">BỘ LỌC</span>
-          <button class="rail-item is-active" data-filter="all" type="button">Tất cả <b id="countAll">59</b></button>
-          <button class="rail-item" data-filter="pending" type="button">Chờ URL <b id="countPending">59</b></button>
-          <button class="rail-item" data-filter="linked" type="button">Đã có link <b id="countLinked">0</b></button>
-          <button class="rail-item" data-filter="verified" type="button">Đã kiểm chứng <b id="countVerified">0</b></button>
-        </div>
-        <div class="rail-block">
-          <span class="rail-label">TIÊU CHÍ OSINT</span>
-          <div class="rail-note">Mỗi URL nên lưu nguồn phát hiện, loại dịch vụ, trạng thái truy cập, ngày kiểm tra và ghi chú xác minh.</div>
-        </div>
-        <div class="rail-block">
-          <span class="rail-label">PHÂN LOẠI LINK</span>
-          <div class="legend"><span>WEBGIS</span><span>PORTAL</span><span>DASHBOARD</span><span>WMS/WFS</span><span>TILES</span><span>API</span></div>
-        </div>
+      <aside class="hero__meta">
+        <div class="hero__meta-row"><span>Mã hồ sơ</span><b>MAE</b></div>
+        <div class="hero__meta-row"><span>Trạng thái</span><b class="seed">SEED DATA</b></div>
+        <div class="hero__meta-row"><span>Mốc dữ liệu</span><b>27.09.2026</b></div>
+        <div class="hero__meta-row"><span>Nguồn khởi tạo</span><b>24 liên kết</b></div>
       </aside>
+    </section>
 
-      <div class="registry-main">
-        <div class="toolbar">
-          <label class="search">
-            <span class="search-icon" aria-hidden="true">⌕</span>
-            <input id="searchInput" type="search" placeholder="Tìm Bộ, cơ quan, tỉnh/thành hoặc mã định danh…" autocomplete="off">
-            <span class="search-hint">/</span>
-          </label>
-          <select id="sortSelect" aria-label="Sắp xếp">
-            <option value="default">Sắp xếp mặc định</option>
-            <option value="az">Tên A → Z</option>
-            <option value="links">Nhiều link trước</option>
-          </select>
-          <div class="result-count"><b id="resultCount">59</b> kết quả</div>
+    <section class="metrics" aria-label="Thống kê">
+      <div><strong id="statSystems">24</strong><span>Hệ thống</span></div>
+      <div><strong id="statCats">11</strong><span>Lĩnh vực</span></div>
+      <div><strong id="statGeo">06</strong><span>Không gian / giám sát</span></div>
+      <div><strong id="statVerified">00</strong><span>Đã kiểm chứng</span></div>
+    </section>
+
+    <section class="toolbar" id="catalog">
+      <label class="search">
+        <span aria-hidden="true">⌕</span>
+        <input id="search" type="search" placeholder="Tìm hệ thống, lĩnh vực, từ khóa…" autocomplete="off">
+        <button id="clearSearch" type="button" aria-label="Xóa tìm kiếm">×</button>
+      </label>
+      <select id="typeFilter" aria-label="Lọc theo loại">
+        <option value="all">Tất cả loại hệ thống</option>
+        <option value="WEBGIS">WebGIS</option>
+        <option value="GEOSPATIAL">Không gian / SDI</option>
+        <option value="MONITORING">Giám sát / cảnh báo</option>
+        <option value="DATABASE">Cơ sở dữ liệu</option>
+        <option value="PORTAL">Cổng thông tin</option>
+      </select>
+      <div class="count">Hiển thị <b id="count">24</b> / 24</div>
+    </section>
+
+    <div class="chips" id="chips" aria-label="Lọc lĩnh vực"></div>
+
+    <section class="visual-section">
+      <div class="section-head">
+        <div>
+          <span class="section-kicker">VISUAL INDEX</span>
+          <h2>Danh mục hệ thống</h2>
         </div>
+        <p>Nhấn vào banner để mở hồ sơ chi tiết.</p>
+      </div>
+      <div class="logo-grid" id="logoGrid"></div>
+      <div class="empty" id="empty" hidden>
+        <div>∅</div><b>Không tìm thấy hệ thống</b><span>Thử từ khóa hoặc bộ lọc khác.</span>
+      </div>
+    </section>
 
-        <div class="registry-head">
-          <div><p class="eyebrow">ENTITY REGISTRY</p><h2 id="sectionTitle">Tất cả đầu mối</h2></div>
-          <div class="status-key">
-            <span><i class="status-dot pending"></i> Chờ URL</span>
-            <span><i class="status-dot linked"></i> Có link</span>
-            <span><i class="status-dot verified"></i> Đã kiểm chứng</span>
-          </div>
+    <section class="deep-section">
+      <div class="section-head">
+        <div>
+          <span class="section-kicker">OSINT REGISTER</span>
+          <h2>Hồ sơ nguồn công khai</h2>
         </div>
+        <p>Phân loại ban đầu; trạng thái kiểm chứng sẽ được cập nhật sau.</p>
+      </div>
+      <div class="register" id="register"></div>
+    </section>
 
-        <div class="entity-grid" id="entityGrid"></div>
-        <div class="empty-state" id="emptyState" hidden><div class="empty-symbol">∅</div><h3>Không có kết quả phù hợp</h3><p>Thử từ khóa khác hoặc bỏ bớt bộ lọc.</p></div>
+    <section class="method">
+      <div class="method__intro">
+        <span class="section-kicker">METHODOLOGY</span>
+        <h2>Chuẩn ghi nhận</h2>
+        <p>Trang này chỉ tổ chức các liên kết công khai. Chưa coi một URL là “đã xác minh” cho tới khi kiểm tra được chủ thể vận hành, khả năng truy cập và vai trò của hệ thống.</p>
+      </div>
+      <div class="method__grid">
+        <article><b>01</b><h3>Discover</h3><p>Ghi nhận liên kết và nguồn xuất hiện.</p></article>
+        <article><b>02</b><h3>Classify</h3><p>Phân loại WebGIS, SDI, CSDL, portal, monitoring.</p></article>
+        <article><b>03</b><h3>Verify</h3><p>Đối chiếu chủ thể, tên miền và chức năng thực tế.</p></article>
+        <article><b>04</b><h3>Timestamp</h3><p>Lưu ngày kiểm tra gần nhất để theo dõi thay đổi.</p></article>
       </div>
     </section>
 
-    <section class="protocol">
-      <div><p class="eyebrow">COLLECTION PROTOCOL</p><h2>Chuẩn ghi nhận một WebGIS</h2></div>
-      <div class="protocol-grid">
-        <article><span>01</span><h3>Discover</h3><p>Ghi URL gốc và nguồn phát hiện công khai.</p></article>
-        <article><span>02</span><h3>Classify</h3><p>Phân loại WebGIS, portal, dashboard, OGC, tiles hoặc API.</p></article>
-        <article><span>03</span><h3>Verify</h3><p>Kiểm tra truy cập, chủ thể vận hành và phạm vi dữ liệu.</p></article>
-        <article><span>04</span><h3>Timestamp</h3><p>Lưu ngày kiểm tra gần nhất, không coi URL là vĩnh viễn.</p></article>
-        <article><span>05</span><h3>Preserve</h3><p>Giữ metadata tối thiểu để tái kiểm chứng về sau.</p></article>
-      </div>
-    </section>
-
-    <section class="method-note">
-      <div><p class="eyebrow">BASELINE</p><h2>Phạm vi tổ chức</h2></div>
-      <p>Khung trung ương dùng danh sách 14 Bộ và 3 cơ quan ngang Bộ. Khung địa phương dùng 34 đơn vị hành chính cấp tỉnh gồm 28 tỉnh và 6 thành phố. Nhóm “8 Ủy ban Quốc gia” hiện được giữ như danh mục làm việc theo yêu cầu dự án và nên được đối chiếu văn bản tổ chức riêng khi gắn nguồn chính thức.</p>
-      <div class="source-links">
-        <a href="https://xaydungchinhsach.chinhphu.vn/toan-van-nghi-quyet-176-2025-qh15-ve-co-cau-to-chuc-cua-chinh-phu-nhiem-ky-quoc-hoi-khoa-xv-119250219181918532.htm" target="_blank" rel="noopener">NQ 176/2025/QH15 ↗</a>
-        <a href="https://xaydungchinhsach.chinhphu.vn/toan-van-nghi-quyet-so-202-2025-qh15-ve-sap-xep-don-vi-hanh-chinh-cap-tinh-119250612174148722.htm" target="_blank" rel="noopener">NQ 202/2025/QH15 ↗</a>
-      </div>
-    </section>
+    <div class="footnote">
+      <span>GISMAP · Bộ Nông nghiệp và Môi trường</span>
+      <span>Danh mục khởi tạo — chưa phải kết luận kiểm chứng OSINT</span>
+    </div>
   </main>
 
-  <footer>
-    <span>GISMAP · Public WebGIS OSINT Registry</span>
-    <span>Public-source links only · No authentication bypass · No private data collection</span>
-  </footer>
-
   <dialog id="detailDialog">
-    <div class="dialog-wrap">
-      <button class="dialog-close" id="dialogClose" aria-label="Đóng">×</button>
-      <div id="dialogContent"></div>
+    <div class="dialog">
+      <button class="dialog__close" id="dialogClose" aria-label="Đóng">×</button>
+      <div id="dialogBody"></div>
     </div>
   </dialog>
 
-  <script src="assets/js/data.js"></script>
+  <script src="assets/js/mae-data.js"></script>
   <script src="assets/js/app.js"></script>
 </body>
 </html>
