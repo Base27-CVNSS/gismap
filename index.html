@@ -8,7 +8,7 @@
   <title>GISMAP · Vietnam Public WebGIS Registry</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Serif:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/app.css">
 </head>
 <body>
@@ -64,23 +64,23 @@
     </section>
 
     <section class="registry-section" id="ministries" data-section="ministry">
-      <div class="section-head"><div><span class="section-kicker">CENTRAL · MINISTRIES</span><h2>14 Bộ</h2></div><p>Bộ Nông nghiệp và Môi trường đã có hồ sơ chi tiết.</p></div>
-      <div class="entity-grid" id="ministryGrid"></div>
+      <div class="section-head"><div><span class="section-kicker">CENTRAL · MINISTRIES</span><h2>14 Bộ</h2></div><p>Theo dõi trạng thái nguồn theo cấu trúc thống nhất.</p></div>
+      <div class="registry-table" id="ministryGrid"></div>
     </section>
 
     <section class="registry-section" id="agencies" data-section="agency">
-      <div class="section-head"><div><span class="section-kicker">CENTRAL · MINISTERIAL-LEVEL AGENCIES</span><h2>3 cơ quan ngang Bộ</h2></div><p>Khung sẵn sàng để cập nhật WebGIS sau.</p></div>
-      <div class="entity-grid entity-grid--3" id="agencyGrid"></div>
+      <div class="section-head"><div><span class="section-kicker">CENTRAL · MINISTERIAL-LEVEL AGENCIES</span><h2>3 cơ quan ngang Bộ</h2></div><p>Cùng cấu trúc bảng, sẵn sàng bổ sung liên kết.</p></div>
+      <div class="registry-table" id="agencyGrid"></div>
     </section>
 
     <section class="registry-section" id="localities" data-section="locality">
-      <div class="section-head"><div><span class="section-kicker">PROVINCIAL LEVEL · 2025 BASELINE</span><h2>34 đơn vị hành chính cấp tỉnh</h2></div><p>28 tỉnh · 6 thành phố trực thuộc Trung ương.</p></div>
+      <div class="section-head"><div><span class="section-kicker">PROVINCIAL LEVEL · 2025 BASELINE</span><h2>34 đơn vị hành chính cấp tỉnh</h2></div><p>28 tỉnh · 6 thành phố trực thuộc Trung ương · cùng schema theo dõi.</p></div>
       <div class="locality-tabs">
         <button class="active" data-local-kind="all">Tất cả · 34</button>
         <button data-local-kind="Tỉnh">Tỉnh · 28</button>
         <button data-local-kind="Thành phố trực thuộc Trung ương">Thành phố · 6</button>
       </div>
-      <div class="entity-grid entity-grid--local" id="localityGrid"></div>
+      <div class="registry-table" id="localityGrid"></div>
     </section>
 
     <section class="mae-profile" id="maeProfile">
