@@ -114,6 +114,34 @@
   $("#dialogClose").addEventListener("click",()=>$("#detailDialog").close());
   $("#detailDialog").addEventListener("click",e=>{if(e.target===$("#detailDialog"))$("#detailDialog").close();});
 
+  document.addEventListener("keydown",e=>{
+    const tag=(document.activeElement&&document.activeElement.tagName)||"";
+    const typing=["INPUT","TEXTAREA","SELECT"].includes(tag);
+    if(e.key==="/"&&!typing){
+      e.preventDefault();
+      $("#globalSearch").focus();
+      $("#globalSearch").select();
+    }
+    if(e.key==="Escape"){
+      if($("#detailDialog").open){ $("#detailDialog").close(); return; }
+      if(document.activeElement===$("#globalSearch")&&$("#globalSearch").value){
+        $("#globalSearch").value=""; q=""; renderRegistry();
+      }else if(document.activeElement===$("#maeSearch")&&$("#maeSearch").value){
+        $("#maeSearch").value=""; maeQ=""; renderMae();
+      }
+    }
+  });
+
+  if("IntersectionObserver" in window){
+    const navById={ministries:"ministries",agencies:"agencies",localities:"localities"};
+    const observer=new IntersectionObserver(entries=>{
+      const visible=entries.filter(x=>x.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
+      if(!visible) return;
+      $("[data-jump]").forEach(btn=>btn.classList.toggle("active",btn.dataset.jump===navById[visible.target.id]));
+    },{rootMargin:"-90px 0px -55% 0px",threshold:[0,.15,.35]});
+    ["ministries","agencies","localities"].forEach(id=>{const el=$("#"+id);if(el)observer.observe(el);});
+  }
+
   $("#maeSystems").textContent=String(MAE.length).padStart(2,"0");
   $("#maeCats").textContent=String(new Set(MAE.map(x=>x.cat)).size).padStart(2,"0");
   $("#maeGeo").textContent=String(MAE.filter(x=>["WEBGIS","GEOSPATIAL","MONITORING"].includes(x.type)).length).padStart(2,"0");
