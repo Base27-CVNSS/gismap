@@ -91,11 +91,11 @@
     $("#maeLogoGrid").innerHTML=rows.map(x=>'<article class="logo-cell" data-mae="'+esc(x.id)+'" tabindex="0" role="button">'+
       '<img src="'+esc(x.img)+'" alt="'+esc(x.name)+'" loading="lazy" onerror="this.remove()">'+
       '<span class="logo-cell__num">'+esc(x.id)+'</span><span class="logo-cell__type">'+esc(TYPE_LABEL[x.type]||x.type)+'</span></article>').join("");
-    $("#maeRegister").innerHTML='<div class="register-head"><div>Mã</div><div>Hệ thống</div><div>Lĩnh vực</div><div>Loại</div><div>Trạng thái</div></div>'+
+    $("#maeRegister").innerHTML='<div class="register-head"><div>Mã</div><div>Hệ thống</div><div>Lĩnh vực</div><div>Loại</div><div>Trạng thái</div><div>Cập nhật</div></div>'+
       rows.map(x=>'<div class="register-row" data-mae="'+esc(x.id)+'" tabindex="0" role="button">'+
       '<div class="reg-id">'+esc(x.id)+'</div><div class="reg-title"><b>'+esc(x.name)+'</b><span>'+esc(host(x.url))+'</span></div>'+
       '<div class="reg-field">'+esc(x.cat)+'</div><div><span class="type-badge '+esc(x.type.toLowerCase())+'">'+esc(TYPE_LABEL[x.type]||x.type)+'</span></div>'+
-      '<div class="reg-status">Seed data</div></div>').join("");
+      '<div class="reg-status">Seed data</div><div class="reg-date">'+esc(x.lastChecked||"—")+'</div></div>').join("");
     $$("[data-mae]").forEach(el=>{
       const open=()=>openMae(el.dataset.mae);
       el.addEventListener("click",open);
