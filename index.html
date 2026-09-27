@@ -1,819 +1,141 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CSDL Nông nghiệp & Môi trường — Cơ cấu Chính phủ 2025</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --ink: #111827;
-  --muted: #6b7280;
-  --bg: #f5f6f8;
-  --cell-bg: #f7f8fa;
-  --cell-bg-hover: #eef1f5;
-  --cell-line: #e6e9ee;
-  --radius: 10px;
-  --row-h: 72px;
-}
-
-body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background: var(--bg);
-  color: var(--ink);
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  min-height: 100vh;
-}
-
-.wrap { max-width: 1200px; margin: 0 auto; padding: 40px 24px 72px; }
-
-/* ===== HEADER ===== */
-.header { margin-bottom: 24px; }
-.header__eyebrow {
-  font-size: 12px; font-weight: 600; letter-spacing: 1.5px;
-  text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
-}
-.header h1 {
-  font-size: clamp(22px, 3vw, 30px); font-weight: 800;
-  letter-spacing: -0.6px; line-height: 1.15; margin-bottom: 8px;
-}
-.header p { font-size: 14.5px; color: var(--muted); max-width: 620px; }
-
-/* ===== TOOLBAR ===== */
-.toolbar {
-  display: flex; gap: 12px; align-items: center;
-  margin-bottom: 16px; flex-wrap: wrap;
-}
-.search { position: relative; flex: 1; min-width: 240px; max-width: 400px; }
-.search input {
-  width: 100%; height: 40px; padding: 0 40px;
-  border: 1px solid var(--cell-line); border-radius: var(--radius);
-  background: #fff; font-family: inherit; font-size: 14px;
-  color: var(--ink); outline: none; transition: border-color .15s;
-}
-.search input:focus { border-color: var(--ink); }
-.search input::placeholder { color: #9ca3af; }
-.search .fa-magnifying-glass {
-  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-  color: #9ca3af; font-size: 13px; pointer-events: none;
-}
-.search .clear {
-  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
-  border: none; background: transparent; cursor: pointer;
-  color: #9ca3af; font-size: 13px; padding: 6px; display: none;
-}
-.search .clear.show { display: block; }
-.search .clear:hover { color: var(--ink); }
-
-.count { font-size: 13px; color: var(--muted); }
-.count b { color: var(--ink); font-weight: 600; }
-
-/* ===== CHIPS ===== */
-.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
-.chip {
-  padding: 5px 11px; border: 1px solid var(--cell-line); background: #fff;
-  color: var(--muted); border-radius: 999px; font-family: inherit;
-  font-size: 12px; font-weight: 500; cursor: pointer;
-  transition: all .15s; white-space: nowrap;
-}
-.chip:hover { color: var(--ink); border-color: #cbd5e1; }
-.chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
-
-/* ============================================
-   BẢNG TABLE — banner thấp, nền hài hòa
-   ============================================ */
-.table {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: var(--row-h);
-  border-top: 1px solid var(--cell-line);
-  border-left: 1px solid var(--cell-line);
-  border-radius: var(--radius);
-  overflow: hidden;
-  background: var(--cell-bg);
-  box-shadow: 0 1px 2px rgba(15,23,42,.03);
-}
-.cell {
-  border-right: 1px solid var(--cell-line);
-  border-bottom: 1px solid var(--cell-line);
-  display: flex; align-items: center; justify-content: center;
-  padding: 6px 12px;
-  cursor: pointer; position: relative;
-  background: var(--cell-bg);
-  transition: background .18s;
-  overflow: hidden;
-}
-.cell:hover { background: var(--cell-bg-hover); }
-.cell:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; z-index: 2; }
-.cell img {
-  max-width: 100%; max-height: 100%;
-  object-fit: contain; display: block;
-  transition: transform .25s;
-  filter: drop-shadow(0 1px 1px rgba(15,23,42,.04));
-}
-.cell:hover img { transform: scale(1.04); }
-.cell.no-img::before {
-  content: '\f1c0';
-  font-family: 'Font Awesome 6 Free';
-  font-weight: 900; font-size: 24px; color: #cbd5e1;
-}
-.cell__num {
-  position: absolute; top: 4px; left: 6px;
-  font-size: 9px; font-weight: 700; color: #94a3b8;
-  letter-spacing: 0.4px;
-  font-variant-numeric: tabular-nums;
-  opacity: 0; transition: opacity .18s;
-  pointer-events: none;
-}
-.cell:hover .cell__num { opacity: 1; }
-
-/* ===== EMPTY ===== */
-.empty {
-  grid-column: 1 / -1;
-  padding: 70px 20px;
-  text-align: center;
-  color: var(--muted);
-  background: var(--cell-bg);
-}
-.empty i { font-size: 34px; opacity: .3; margin-bottom: 12px; display: block; }
-.empty h3 { font-size: 15px; color: var(--ink); margin-bottom: 4px; font-weight: 600; }
-.empty p { font-size: 13px; }
-
-/* ============================================
-   REFERENCE — Cơ cấu Chính phủ 2025
-   ============================================ */
-.ref {
-  margin-top: 40px;
-  padding-top: 32px;
-  border-top: 1px solid var(--cell-line);
-}
-.ref__head {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-.ref__head h2 {
-  font-size: 17px;
-  font-weight: 800;
-  letter-spacing: -0.3px;
-}
-.ref__head span {
-  font-size: 12.5px;
-  color: var(--muted);
-}
-.ref__head .badge {
-  display: inline-block;
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  padding: 3px 8px;
-  background: #eef2f7;
-  color: #475569;
-  border-radius: 4px;
-  text-transform: uppercase;
-}
-
-.ref__grid {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr;
-  gap: 16px;
-}
-
-.ref__box {
-  background: #fff;
-  border: 1px solid var(--cell-line);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-.ref__box-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 14px;
-  background: var(--cell-bg);
-  border-bottom: 1px solid var(--cell-line);
-  font-size: 12.5px;
-  font-weight: 700;
-  letter-spacing: 0.3px;
-  text-transform: uppercase;
-  color: var(--ink);
-}
-.ref__box-head .n {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 22px;
-  height: 20px;
-  padding: 0 6px;
-  border-radius: 999px;
-  background: var(--ink);
-  color: #fff;
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0;
-}
-.ref__list {
-  list-style: none;
-  padding: 4px 0;
-}
-.ref__list li {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 8px 14px;
-  font-size: 13px;
-  line-height: 1.4;
-  color: var(--ink);
-  border-bottom: 1px solid #f1f3f6;
-}
-.ref__list li:last-child { border-bottom: none; }
-.ref__list li:hover { background: var(--cell-bg); }
-.ref__list .no {
-  flex-shrink: 0;
-  font-size: 11px;
-  font-weight: 600;
-  color: #94a3b8;
-  font-variant-numeric: tabular-nums;
-  padding-top: 2px;
-  min-width: 20px;
-}
-.ref__list .name { flex: 1; }
-
-.ref__note {
-  margin-top: 16px;
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.6;
-  padding: 12px 14px;
-  background: #fff;
-  border: 1px dashed var(--cell-line);
-  border-radius: var(--radius);
-}
-.ref__note b { color: var(--ink); font-weight: 600; }
-
-/* ===== MODAL ===== */
-.modal {
-  position: fixed; inset: 0; z-index: 100;
-  display: none; align-items: center; justify-content: center;
-  padding: 24px;
-}
-.modal.open { display: flex; }
-
-.modal__overlay {
-  position: absolute; inset: 0;
-  background: rgba(17, 24, 39, 0.45);
-  backdrop-filter: blur(2px);
-  animation: fadeIn .18s ease;
-}
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-.modal__panel {
-  position: relative;
-  background: #fff;
-  border-radius: 12px;
-  width: 100%;
-  max-width: 480px;
-  box-shadow: 0 20px 50px rgba(0,0,0,.18);
-  animation: slideUp .22s cubic-bezier(.2,.8,.2,1);
-  overflow: hidden;
-}
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(10px) scale(.98); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-.modal__close {
-  position: absolute; top: 14px; right: 14px;
-  width: 30px; height: 30px;
-  border: none; background: #f3f4f6;
-  border-radius: 8px; cursor: pointer;
-  color: var(--muted); font-size: 13px;
-  display: flex; align-items: center; justify-content: center;
-  transition: background .15s, color .15s;
-  z-index: 2;
-}
-.modal__close:hover { background: #e5e7eb; color: var(--ink); }
-
-.modal__body { padding: 26px 26px 8px; }
-.modal__cat {
-  display: inline-block;
-  font-size: 10.5px; font-weight: 600;
-  letter-spacing: .5px; text-transform: uppercase;
-  color: var(--muted);
-  padding: 4px 9px;
-  background: #f3f4f6;
-  border-radius: 4px;
-  margin-bottom: 12px;
-}
-.modal__title {
-  font-size: 17px; font-weight: 700; line-height: 1.35;
-  letter-spacing: -0.2px; color: var(--ink);
-  margin-bottom: 12px; padding-right: 30px;
-}
-.modal__desc {
-  font-size: 13.5px; line-height: 1.6;
-  color: #4b5563; margin-bottom: 18px;
-}
-.modal__status {
-  display: inline-flex; align-items: center; gap: 7px;
-  font-size: 12.5px; font-weight: 600; color: #059669;
-  margin-bottom: 4px;
-}
-.modal__status::before {
-  content: '';
-  width: 7px; height: 7px; background: #10b981;
-  border-radius: 50%;
-  box-shadow: 0 0 0 3px rgba(16,185,129,.15);
-}
-.modal__foot {
-  padding: 14px 26px 22px;
-  display: flex; gap: 10px;
-}
-.btn {
-  flex: 1; height: 42px;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-  background: #fff; color: var(--ink);
-  font-family: inherit; font-size: 13.5px; font-weight: 600;
-  cursor: pointer;
-  display: inline-flex; align-items: center; justify-content: center;
-  gap: 8px; text-decoration: none;
-  transition: all .15s;
-}
-.btn:hover { border-color: #d1d5db; background: #fafafa; }
-.btn--primary {
-  background: var(--ink); color: #fff; border-color: var(--ink);
-}
-.btn--primary:hover { background: #1f2937; border-color: #1f2937; }
-.btn i { font-size: 11px; }
-
-/* ===== FOOTER ===== */
-.foot { text-align: center; padding: 36px 24px 0; font-size: 12.5px; color: var(--muted); }
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 1024px) {
-  :root { --row-h: 64px; }
-  .table { grid-template-columns: repeat(3, 1fr); }
-  .ref__grid { grid-template-columns: 1fr 1fr; }
-  .ref__box:first-child { grid-column: 1 / -1; }
-}
-@media (max-width: 720px) {
-  :root { --row-h: 58px; }
-  .table { grid-template-columns: repeat(2, 1fr); }
-  .cell { padding: 5px 10px; }
-  .ref__grid { grid-template-columns: 1fr; }
-  .ref__box:first-child { grid-column: auto; }
-}
-@media (max-width: 560px) {
-  .wrap { padding: 28px 16px 56px; }
-  :root { --row-h: 52px; }
-  .cell { padding: 4px 8px; }
-  .cell__num { display: none; }
-  .chips { flex-wrap: nowrap; overflow-x: auto; margin-left: -16px; margin-right: -16px; padding: 0 16px; scrollbar-width: none; }
-  .chips::-webkit-scrollbar { display: none; }
-  .modal { padding: 0; align-items: flex-end; }
-  .modal__panel {
-    max-width: 100%;
-    border-radius: 16px 16px 0 0;
-    animation: slideUpMob .25s cubic-bezier(.2,.8,.2,1);
-  }
-  @keyframes slideUpMob {
-    from { transform: translateY(100%); }
-    to   { transform: translateY(0); }
-  }
-  .modal__body { padding: 22px 20px 6px; }
-  .modal__foot { padding: 12px 20px 18px; }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="GISMAP — Danh bạ OSINT WebGIS công khai của cơ quan trung ương và 34 tỉnh, thành phố Việt Nam.">
+  <meta name="theme-color" content="#0b1118">
+  <title>GISMAP · Vietnam Public WebGIS OSINT Registry</title>
+  <link rel="stylesheet" href="assets/css/app.css">
 </head>
 <body>
+  <a class="skip-link" href="#registry">Bỏ qua điều hướng</a>
 
-<div class="wrap">
-
-  <!-- ========== HEADER ========== -->
-  <header class="header">
-    <div class="header__eyebrow">Bộ Nông nghiệp và Môi trường</div>
-    <h1>Hệ thống thông tin, Cơ sở dữ liệu</h1>
-    <p>24 hệ thống CSDL chuyên ngành nông nghiệp và môi trường. Nhấn vào logo để xem chi tiết.</p>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">G</div>
+      <div>
+        <strong>GISMAP</strong>
+        <span>PUBLIC WEBGIS OSINT REGISTRY</span>
+      </div>
+    </div>
+    <div class="topbar-meta">
+      <span class="live-dot"></span>
+      <span id="buildDate">Registry baseline</span>
+      <span class="kbd">/</span>
+      <span>Tìm kiếm</span>
+    </div>
   </header>
 
-  <!-- ========== TOOLBAR ========== -->
-  <div class="toolbar">
-    <div class="search">
-      <i class="fa-solid fa-magnifying-glass"></i>
-      <input type="text" id="search" placeholder="Tìm kiếm hệ thống…" autocomplete="off">
-      <button class="clear" id="clearBtn" title="Xóa"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    <div class="count">Hiển thị <b id="count">24</b> / 24 hệ thống</div>
-  </div>
-
-  <!-- ========== FILTER ========== -->
-  <div class="chips" id="chips"></div>
-
-  <!-- ========== TABLE 24 CSDL ========== -->
-  <div class="table" id="grid"></div>
-
-  <!-- =========================================================
-       SECTION: CƠ CẤU CHÍNH PHỦ VIỆT NAM (2025)
-       ========================================================= -->
-  <section class="ref" id="reference">
-    <div class="ref__head">
-      <h2>Cơ cấu Chính phủ Việt Nam</h2>
-      <span class="badge">Sau sắp xếp 2025</span>
-      <span>14 Bộ · 3 Cơ quan ngang Bộ · 8 Ủy ban Quốc gia</span>
-    </div>
-
-    <div class="ref__grid">
-
-      <!-- 14 BỘ -->
-      <div class="ref__box">
-        <div class="ref__box-head">
-          <span>Các Bộ</span>
-          <span class="n">14</span>
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">VIETNAM · OPEN-SOURCE GEOSPATIAL INTELLIGENCE</p>
+        <h1>Danh bạ WebGIS công khai<br>theo cơ quan & địa phương</h1>
+        <p class="lead">Khung chuẩn để thu thập, kiểm chứng và theo dõi các cổng bản đồ, WebGIS, dashboard không gian và dịch vụ dữ liệu công khai. Giai đoạn này thiết lập taxonomy và registry; URL WebGIS sẽ được bổ sung dần.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#registry">Mở registry</a>
+          <button class="btn" id="exportBtn" type="button">Xuất JSON</button>
         </div>
-        <ul class="ref__list">
-          <li><span class="no">01</span><span class="name">Bộ Quốc phòng</span></li>
-          <li><span class="no">02</span><span class="name">Bộ Công an</span></li>
-          <li><span class="no">03</span><span class="name">Bộ Ngoại giao</span></li>
-          <li><span class="no">04</span><span class="name">Bộ Tư pháp</span></li>
-          <li><span class="no">05</span><span class="name">Bộ Tài chính</span></li>
-          <li><span class="no">06</span><span class="name">Bộ Nội vụ</span></li>
-          <li><span class="no">07</span><span class="name">Bộ Khoa học và Công nghệ</span></li>
-          <li><span class="no">08</span><span class="name">Bộ Xây dựng</span></li>
-          <li><span class="no">09</span><span class="name">Bộ Công Thương</span></li>
-          <li><span class="no">10</span><span class="name"><strong>Bộ Nông nghiệp và Môi trường</strong></span></li>
-          <li><span class="no">11</span><span class="name">Bộ Y tế</span></li>
-          <li><span class="no">12</span><span class="name">Bộ Giáo dục và Đào tạo</span></li>
-          <li><span class="no">13</span><span class="name">Bộ Văn hóa, Thể thao và Du lịch</span></li>
-          <li><span class="no">14</span><span class="name">Bộ Dân tộc và Tôn giáo</span></li>
-        </ul>
       </div>
+      <div class="hero-panel" aria-label="Tóm tắt registry">
+        <div class="metric"><span class="metric-value" id="metricEntities">59</span><span class="metric-label">Đầu mối</span></div>
+        <div class="metric"><span class="metric-value" id="metricLinks">0</span><span class="metric-label">WebGIS URLs</span></div>
+        <div class="metric"><span class="metric-value" id="metricVerified">0</span><span class="metric-label">Đã kiểm chứng</span></div>
+        <div class="metric"><span class="metric-value" id="metricCoverage">0%</span><span class="metric-label">Độ phủ link</span></div>
+      </div>
+    </section>
 
-      <!-- 3 CƠ QUAN NGANG BỘ -->
-      <div class="ref__box">
-        <div class="ref__box-head">
-          <span>Cơ quan ngang Bộ</span>
-          <span class="n">3</span>
+    <section class="scope-grid" aria-label="Phạm vi danh mục">
+      <button class="scope-card is-active" data-scope="all" type="button"><span class="scope-no">59</span><span class="scope-title">Toàn bộ</span><span class="scope-sub">Registry quốc gia</span></button>
+      <button class="scope-card" data-scope="ministry" type="button"><span class="scope-no">14</span><span class="scope-title">Bộ</span><span class="scope-sub">Cơ quan trung ương</span></button>
+      <button class="scope-card" data-scope="agency" type="button"><span class="scope-no">03</span><span class="scope-title">Cơ quan ngang Bộ</span><span class="scope-sub">Cơ quan trung ương</span></button>
+      <button class="scope-card" data-scope="committee" type="button"><span class="scope-no">08</span><span class="scope-title">Ủy ban Quốc gia</span><span class="scope-sub">Danh mục làm việc</span></button>
+      <button class="scope-card" data-scope="locality" type="button"><span class="scope-no">34</span><span class="scope-title">Địa phương</span><span class="scope-sub">28 tỉnh · 6 thành phố</span></button>
+    </section>
+
+    <section class="registry-shell" id="registry">
+      <aside class="rail">
+        <div class="rail-block">
+          <span class="rail-label">BỘ LỌC</span>
+          <button class="rail-item is-active" data-filter="all" type="button">Tất cả <b id="countAll">59</b></button>
+          <button class="rail-item" data-filter="pending" type="button">Chờ URL <b id="countPending">59</b></button>
+          <button class="rail-item" data-filter="linked" type="button">Đã có link <b id="countLinked">0</b></button>
+          <button class="rail-item" data-filter="verified" type="button">Đã kiểm chứng <b id="countVerified">0</b></button>
         </div>
-        <ul class="ref__list">
-          <li><span class="no">01</span><span class="name">Văn phòng Chính phủ</span></li>
-          <li><span class="no">02</span><span class="name">Thanh tra Chính phủ</span></li>
-          <li><span class="no">03</span><span class="name">Ngân hàng Nhà nước Việt Nam</span></li>
-        </ul>
-      </div>
-
-      <!-- 8 ỦY BAN QUỐC GIA -->
-      <div class="ref__box">
-        <div class="ref__box-head">
-          <span>Ủy ban Quốc gia</span>
-          <span class="n">8</span>
+        <div class="rail-block">
+          <span class="rail-label">TIÊU CHÍ OSINT</span>
+          <div class="rail-note">Mỗi URL nên lưu nguồn phát hiện, loại dịch vụ, trạng thái truy cập, ngày kiểm tra và ghi chú xác minh.</div>
         </div>
-        <ul class="ref__list">
-          <li><span class="no">01</span><span class="name">Ủy ban Quốc gia Đổi mới Giáo dục và Đào tạo</span></li>
-          <li><span class="no">02</span><span class="name">Ủy ban Quốc gia về Chuyển đổi số</span></li>
-          <li><span class="no">03</span><span class="name">Ủy ban Quốc gia về Biến đổi Khí hậu</span></li>
-          <li><span class="no">04</span><span class="name">Ủy ban Quốc gia Phòng chống AIDS, Ma túy, Mại dâm</span></li>
-          <li><span class="no">05</span><span class="name">Ủy ban Quốc gia Ứng phó sự cố, thiên tai và Tìm kiếm Cứu nạn</span></li>
-          <li><span class="no">06</span><span class="name">Ủy ban An ninh Hàng không Dân dụng Quốc gia</span></li>
-          <li><span class="no">07</span><span class="name">Ủy ban Quốc gia về Người cao tuổi</span></li>
-          <li><span class="no">08</span><span class="name">Ủy ban Quốc gia về Hợp tác Kinh tế Quốc tế</span></li>
-        </ul>
+        <div class="rail-block">
+          <span class="rail-label">PHÂN LOẠI LINK</span>
+          <div class="legend"><span>WEBGIS</span><span>PORTAL</span><span>DASHBOARD</span><span>WMS/WFS</span><span>TILES</span><span>API</span></div>
+        </div>
+      </aside>
+
+      <div class="registry-main">
+        <div class="toolbar">
+          <label class="search">
+            <span class="search-icon" aria-hidden="true">⌕</span>
+            <input id="searchInput" type="search" placeholder="Tìm Bộ, cơ quan, tỉnh/thành hoặc mã định danh…" autocomplete="off">
+            <span class="search-hint">/</span>
+          </label>
+          <select id="sortSelect" aria-label="Sắp xếp">
+            <option value="default">Sắp xếp mặc định</option>
+            <option value="az">Tên A → Z</option>
+            <option value="links">Nhiều link trước</option>
+          </select>
+          <div class="result-count"><b id="resultCount">59</b> kết quả</div>
+        </div>
+
+        <div class="registry-head">
+          <div><p class="eyebrow">ENTITY REGISTRY</p><h2 id="sectionTitle">Tất cả đầu mối</h2></div>
+          <div class="status-key">
+            <span><i class="status-dot pending"></i> Chờ URL</span>
+            <span><i class="status-dot linked"></i> Có link</span>
+            <span><i class="status-dot verified"></i> Đã kiểm chứng</span>
+          </div>
+        </div>
+
+        <div class="entity-grid" id="entityGrid"></div>
+        <div class="empty-state" id="emptyState" hidden><div class="empty-symbol">∅</div><h3>Không có kết quả phù hợp</h3><p>Thử từ khóa khác hoặc bỏ bớt bộ lọc.</p></div>
       </div>
+    </section>
 
+    <section class="protocol">
+      <div><p class="eyebrow">COLLECTION PROTOCOL</p><h2>Chuẩn ghi nhận một WebGIS</h2></div>
+      <div class="protocol-grid">
+        <article><span>01</span><h3>Discover</h3><p>Ghi URL gốc và nguồn phát hiện công khai.</p></article>
+        <article><span>02</span><h3>Classify</h3><p>Phân loại WebGIS, portal, dashboard, OGC, tiles hoặc API.</p></article>
+        <article><span>03</span><h3>Verify</h3><p>Kiểm tra truy cập, chủ thể vận hành và phạm vi dữ liệu.</p></article>
+        <article><span>04</span><h3>Timestamp</h3><p>Lưu ngày kiểm tra gần nhất, không coi URL là vĩnh viễn.</p></article>
+        <article><span>05</span><h3>Preserve</h3><p>Giữ metadata tối thiểu để tái kiểm chứng về sau.</p></article>
+      </div>
+    </section>
+
+    <section class="method-note">
+      <div><p class="eyebrow">BASELINE</p><h2>Phạm vi tổ chức</h2></div>
+      <p>Khung trung ương dùng danh sách 14 Bộ và 3 cơ quan ngang Bộ. Khung địa phương dùng 34 đơn vị hành chính cấp tỉnh gồm 28 tỉnh và 6 thành phố. Nhóm “8 Ủy ban Quốc gia” hiện được giữ như danh mục làm việc theo yêu cầu dự án và nên được đối chiếu văn bản tổ chức riêng khi gắn nguồn chính thức.</p>
+      <div class="source-links">
+        <a href="https://xaydungchinhsach.chinhphu.vn/toan-van-nghi-quyet-176-2025-qh15-ve-co-cau-to-chuc-cua-chinh-phu-nhiem-ky-quoc-hoi-khoa-xv-119250219181918532.htm" target="_blank" rel="noopener">NQ 176/2025/QH15 ↗</a>
+        <a href="https://xaydungchinhsach.chinhphu.vn/toan-van-nghi-quyet-so-202-2025-qh15-ve-sap-xep-don-vi-hanh-chinh-cap-tinh-119250612174148722.htm" target="_blank" rel="noopener">NQ 202/2025/QH15 ↗</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>GISMAP · Public WebGIS OSINT Registry</span>
+    <span>Public-source links only · No authentication bypass · No private data collection</span>
+  </footer>
+
+  <dialog id="detailDialog">
+    <div class="dialog-wrap">
+      <button class="dialog-close" id="dialogClose" aria-label="Đóng">×</button>
+      <div id="dialogContent"></div>
     </div>
+  </dialog>
 
-    <div class="ref__note">
-      <b>Ghi chú:</b> Cơ cấu tổ chức Chính phủ sau cuộc sắp xếp, tinh gọn bộ máy năm 2025 —
-      gồm <b>14 Bộ</b>, <b>3 cơ quan ngang Bộ</b> và <b>8 Ủy ban Quốc gia</b> theo lĩnh vực.
-      Bộ Nông nghiệp và Môi trường là Bộ thứ 10 trong danh sách, được thành lập trên cơ sở hợp nhất
-      Bộ Nông nghiệp và Phát triển nông thôn với Bộ Tài nguyên và Môi trường.
-    </div>
-  </section>
-
-  <div class="foot">© <span id="year"></span> Bộ Nông nghiệp và Môi trường</div>
-</div>
-
-<!-- ========== MODAL ========== -->
-<div class="modal" id="modal" aria-hidden="true" role="dialog" aria-modal="true">
-  <div class="modal__overlay" data-close></div>
-  <div class="modal__panel">
-    <button class="modal__close" data-close aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button>
-
-    <div class="modal__body">
-      <span class="modal__cat" id="mCat"></span>
-      <h2 class="modal__title" id="mTitle"></h2>
-      <p class="modal__desc" id="mDesc"></p>
-      <span class="modal__status">Hoạt động</span>
-    </div>
-
-    <div class="modal__foot">
-      <button class="btn" data-close>Đóng</button>
-      <a class="btn btn--primary" id="mLink" href="#" target="_blank" rel="noopener">
-        Truy cập <i class="fa-solid fa-arrow-up-right-from-square"></i>
-      </a>
-    </div>
-  </div>
-</div>
-
-<script>
-/* ============================================================
-   DỮ LIỆU 24 CSDL — Bộ Nông nghiệp và Môi trường
-   ============================================================ */
-const DATA = [
-  { name: "Hệ thống mã số vùng trồng & cơ sở đóng gói",
-    desc: "Quản lý mã số vùng trồng, cơ sở đóng gói phục vụ xuất khẩu nông sản.",
-    url: "https://msvt-csdg.ppd.gov.vn/",
-    img: "https://media.mae.gov.vn/Image/865d817b-2d7e-7305-1c70-694c4607350e/2025/7/23/bannerbot%20(2)_2b1102c59f.jpg",
-    cat: "Trồng trọt & BVTV" },
-
-  { name: "CSDL Bảo vệ thực vật",
-    desc: "Cơ sở dữ liệu quốc gia về thuốc bảo vệ thực vật, sinh vật gây hại.",
-    url: "https://csdl.ppd.gov.vn/",
-    img: "https://media.mae.gov.vn/Image/6d458743-cc3f-33dd-ad2f-0f6c48a16774/2025/4/25/07_82a8dde490.png",
-    cat: "Trồng trọt & BVTV" },
-
-  { name: "CSDL Chăn nuôi",
-    desc: "Thông tin về giống vật nuôi, thức ăn chăn nuôi, cơ sở chăn nuôi.",
-    url: "https://csdlchannuoi.mae.gov.vn",
-    img: "https://media.mae.gov.vn/Image/6d458743-cc3f-33dd-ad2f-0f6c48a16774/2025/4/25/10_e350e99d56.png",
-    cat: "Chăn nuôi & Thú y" },
-
-  { name: "Hệ thống dữ liệu An toàn dịch bệnh",
-    desc: "Quản lý dữ liệu dịch bệnh động vật, cơ sở an toàn dịch bệnh.",
-    url: "http://171.244.133.106/DAH/account/login",
-    img: "https://media.mae.gov.vn/Image/6d458743-cc3f-33dd-ad2f-0f6c48a16774/2025/4/25/13_433c1b3c91.png",
-    cat: "Chăn nuôi & Thú y" },
-
-  { name: "CSDL An toàn thực phẩm Thủy sản",
-    desc: "Cơ sở dữ liệu cơ sở ATTP, giám sát dư lượng trong thủy sản.",
-    url: "https://cucthuy.gov.vn/web/guest/co-so-attb-giam-sat",
-    img: "https://media.mae.gov.vn/Image/6d458743-cc3f-33dd-ad2f-0f6c48a16774/2025/4/25/19_965cfefcfc.png",
-    cat: "Thủy sản" },
-
-  { name: "CSDL Môi trường Quốc gia",
-    desc: "Dữ liệu quan trắc môi trường, chất thải, khí thải trên toàn quốc.",
-    url: "https://moitruongquocgia.mae.gov.vn/",
-    img: "https://media.mae.gov.vn/Image/6d458743-cc3f-33dd-ad2f-0f6c48a16774/2025/4/25/01_0431ea83d0.png",
-    cat: "Môi trường & ĐDSH" },
-
-  { name: "CSDL Đa dạng sinh học",
-    desc: "Cơ sở dữ liệu quốc gia về đa dạng sinh học, loài nguy cấp, quý hiếm.",
-    url: "https://dadangsinhhoc.mae.gov.vn/trang_chu",
-    img: "https://media.mae.gov.vn/Image/865d817b-2d7e-7305-1c70-694c4607350e/2026/6/4/bannerbot_a68cd76195.jpg",
-    cat: "Môi trường & ĐDSH" },
-
-  { name: "Dữ liệu viễn thám Quốc gia",
-    desc: "Kho dữ liệu ảnh viễn thám phục vụ giám sát tài nguyên, môi trường.",
-    url: "https://dulieuvientham.gov.vn/",
-    img: "https://media.mae.gov.vn/Image/6d458743-cc3f-33dd-ad2f-0f6c48a16774/2025/4/25/12_5ab382736a.png",
-    cat: "Viễn thám & Đo đạc" },
-
-  { name: "Cổng thông tin Biển & Hải đảo",
-    desc: "Dữ liệu tài nguyên biển, hải đảo, môi trường biển Việt Nam.",
-    url: "http://seaportal.vodic.vn/seaportal/srv/vi/main.home",
-    img: "https://media.mae.gov.vn/Image/865d817b-2d7e-7305-1c70-694c4607350e/2025/7/23/bannerbot_a52b3861f4.jpg",
-    cat: "Biển & Hải đảo" },
-
-  { name: "Hạ tầng dữ liệu không gian VNSDI",
-    desc: "Hạ tầng dữ liệu không gian quốc gia phục vụ chia sẻ, tích hợp.",
-    url: "https://vnsdi.mae.gov.vn/home",
-    img: "https://media.mae.gov.vn/Image/865d817b-2d7e-7305-1c70-694c4607350e/2025/6/12/bannerbot_9ccd9ba930.jpg",
-    cat: "Viễn thám & Đo đạc" },
-
-  { name: "CSDL Tài nguyên nước",
-    desc: "Dữ liệu tài nguyên nước, lưu vực sông, công trình thủy lợi.",
-    url: "https://nawapi.gov.vn/ban-tin",
-    img: "https://media.mae.gov.vn/Image/865d817b-2d7e-7305-1c70-694c4607350e/2025/6/12/bannerbot%20(1)_f4bb601078.jpg",
-    cat: "Tài nguyên nước" },
-
-  { name: "Khí tượng thủy văn Quốc gia",
-    desc: "Dự báo, cảnh báo khí tượng thủy văn, thời tiết toàn quốc.",
-    url: "http://vnmha.gov.vn/nchmf-new/show-city-weather",
-    img: "https://media.mae.gov.vn/Image/6d458743-cc3f-33dd-ad2f-0f6c48a16774/2025/4/25/21_dd4daf0ff6.png",
-    cat: "Khí tượng thủy văn" },
-
-  { name: "Hệ thống thông tin Lâm nghiệp",
-    desc: "Quản lý dữ liệu rừng, đất lâm nghiệp, diễn biến rừng.",
-    url: "https://vnforest.gov.vn/he-thong-thong-tin-quan-ly-nganh-lam-nghiep/",
-    img: "https://media.mae.gov.vn/Image/865d817b-2d7e-7305-1c70-694c4607350e/2025/6/12/bannerbot%20(2)_3e8191f5bf.jpg",
-    cat: "Lâm nghiệp" },
-
-  { name: "CSDL Địa chất & Khoáng sản",
-    desc: "Dữ liệu địa chất, khoáng sản, quy hoạch thăm dò khai thác.",
-    url: "https://dskt.dmptc.gov.vn/",
-    img: "https://media.mae.gov.vn/Image/6d458743-cc3f-33dd-ad2f-0f6c48a16774/2025/4/25/03_b3e586e4d5.png",
-    cat: "Địa chất & Khoáng sản" },
-
-  { name: "WebGIS Đê điều",
-    desc: "Bản đồ số hệ thống đê điều, công trình phòng chống thiên tai.",
-    url: "https://webgis.dedieu.gov.vn",
-    img: "https://media.mae.gov.vn/Image/6d458743-cc3f-33dd-ad2f-0f6c48a16774/2025/4/25/28_ad394a1723.png",
-    cat: "Đê điều & PCTT" },
-
-  { name: "Lũ quét & Sạt lở đất",
-    desc: "Cảnh báo lũ quét, sạt lở đất khu vực miền núi, trung du.",
-    url: "https://luquetsatlo.nchmf.gov.vn/",
-    img: "https://media.mae.gov.vn/Image/6d458743-cc3f-33dd-ad2f-0f6c48a16774/2025/4/25/08_18065ba34e.png",
-    cat: "Khí tượng thủy văn" },
-
-  { name: "CSDL Sạt lở",
-    desc: "Dữ liệu sạt lở bờ sông, bờ biển và khu vực có nguy cơ cao.",
-    url: "https://satlo.dmptc.gov.vn/",
-    img: "https://media.mae.gov.vn/Image/6d458743-cc3f-33dd-ad2f-0f6c48a16774/2025/4/25/11_61ba50aa8a.png",
-    cat: "Đê điều & PCTT" },
-
-  { name: "Hệ thống cảnh báo lũ",
-    desc: "Cảnh báo lũ, ngập lụt theo thời gian thực cho các lưu vực sông.",
-    url: "https://floodwarning.imhen.com/hoc/main",
-    img: "https://media.mae.gov.vn/Image/6d458743-cc3f-33dd-ad2f-0f6c48a16774/2025/4/25/14_546fbc765b.png",
-    cat: "Đê điều & PCTT" },
-
-  { name: "Hệ thống quản lý thiên tai",
-    desc: "CSDL quản lý thiên tai, thiệt hại và công tác ứng phó.",
-    url: "http://vndms.dmptc.gov.vn/",
-    img: "https://media.mae.gov.vn/Image/6d458743-cc3f-33dd-ad2f-0f6c48a16774/2025/4/25/06_012fcf0659.png",
-    cat: "Đê điều & PCTT" },
-
-  { name: "CSDL Thủy sản",
-    desc: "Dữ liệu nuôi trồng, khai thác, chế biến và xuất khẩu thủy sản.",
-    url: "https://gstc.tongcucthuysan.gov.vn",
-    img: "https://media.mae.gov.vn/Image/6d458743-cc3f-33dd-ad2f-0f6c48a16774/2025/4/25/26_0c68aa77ab.png",
-    cat: "Thủy sản" },
-
-  { name: "Hệ thống giám sát PCTT",
-    desc: "Giám sát, theo dõi công tác phòng chống thiên tai toàn quốc.",
-    url: "https://watch.pcccr.vn/",
-    img: "https://media.mae.gov.vn/Image/6d458743-cc3f-33dd-ad2f-0f6c48a16774/2025/4/25/20_c64928bad3.png",
-    cat: "Đê điều & PCTT" },
-
-  { name: "CSDL Rừng NEN",
-    desc: "Hệ thống thông tin theo dõi diễn biến rừng, cảnh báo mất rừng.",
-    url: "https://nen.vnforest.gov.vn/",
-    img: "https://media.mae.gov.vn/Image/865d817b-2d7e-7305-1c70-694c4607350e/2025/12/26/bannerbot_798ef6c5b3.jpg",
-    cat: "Lâm nghiệp" },
-
-  { name: "Dự báo KTTV phục vụ Nông nghiệp",
-    desc: "Dự báo khí tượng thủy văn chuyên ngành nông nghiệp.",
-    url: "http://vnmha.gov.vn/du-bao-kttv-phuc-vu-nong-nghiep-165",
-    img: "https://media.mae.gov.vn/Image/6d458743-cc3f-33dd-ad2f-0f6c48a16774/2025/4/25/29_05d8178610.png",
-    cat: "Khí tượng thủy văn" },
-
-  { name: "Hệ thống MKDC",
-    desc: "Hệ thống thông tin chuyên ngành phục vụ quản lý nhà nước.",
-    url: "https://mkdc.vn/vi/",
-    img: "https://media.mae.gov.vn/Image/865d817b-2d7e-7305-1c70-694c4607350e/2025/6/12/bannerbot%20(3)_06904730fd.jpg",
-    cat: "Chăn nuôi & Thú y" }
-];
-
-/* ============================================================
-   STATE
-   ============================================================ */
-let activeCat = 'all';
-let keyword = '';
-
-const gridEl   = document.getElementById('grid');
-const chipsEl  = document.getElementById('chips');
-const searchEl = document.getElementById('search');
-const clearBtn = document.getElementById('clearBtn');
-const countEl  = document.getElementById('count');
-const modal    = document.getElementById('modal');
-
-const catCount = {};
-DATA.forEach(d => { catCount[d.cat] = (catCount[d.cat] || 0) + 1; });
-
-/* ============================================================
-   CHIPS
-   ============================================================ */
-function renderChips() {
-  const all = [
-    { key: 'all', label: 'Tất cả' },
-    ...Object.keys(catCount).sort().map(c => ({ key: c, label: c }))
-  ];
-  chipsEl.innerHTML = all.map(it => `
-    <button class="chip ${it.key === activeCat ? 'active' : ''}" data-cat="${it.key}">${it.label}</button>
-  `).join('');
-  chipsEl.querySelectorAll('.chip').forEach(b => {
-    b.addEventListener('click', () => {
-      activeCat = b.dataset.cat;
-      renderChips();
-      renderGrid();
-    });
-  });
-}
-
-/* ============================================================
-   GRID
-   ============================================================ */
-function renderGrid() {
-  const kw = keyword.trim().toLowerCase();
-  const filtered = DATA.filter(item => {
-    const okCat = activeCat === 'all' || item.cat === activeCat;
-    const okKw  = !kw
-      || item.name.toLowerCase().includes(kw)
-      || item.desc.toLowerCase().includes(kw)
-      || item.cat.toLowerCase().includes(kw);
-    return okCat && okKw;
-  });
-
-  countEl.textContent = filtered.length;
-
-  if (!filtered.length) {
-    gridEl.innerHTML = `
-      <div class="empty">
-        <i class="fa-regular fa-face-frown"></i>
-        <h3>Không tìm thấy hệ thống</h3>
-        <p>Thử đổi từ khóa hoặc chọn lĩnh vực khác.</p>
-      </div>`;
-    return;
-  }
-
-  gridEl.innerHTML = filtered.map(item => {
-    const idx = DATA.indexOf(item);
-    return `
-      <div class="cell" data-idx="${idx}" tabindex="0" role="button"
-           aria-label="${item.name}" title="${item.name}">
-        <img src="${item.img}" alt="${item.name}" loading="lazy"
-             onerror="this.parentElement.classList.add('no-img'); this.remove();">
-        <span class="cell__num">${String(idx + 1).padStart(2,'0')}</span>
-      </div>`;
-  }).join('');
-
-  gridEl.querySelectorAll('.cell').forEach(cell => {
-    const open = () => openModal(+cell.dataset.idx);
-    cell.addEventListener('click', open);
-    cell.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
-    });
-  });
-}
-
-/* ============================================================
-   MODAL
-   ============================================================ */
-let lastFocused = null;
-
-function openModal(idx) {
-  const item = DATA[idx];
-  if (!item) return;
-
-  document.getElementById('mCat').textContent   = item.cat;
-  document.getElementById('mTitle').textContent = item.name;
-  document.getElementById('mDesc').textContent  = item.desc;
-  document.getElementById('mLink').href          = item.url;
-
-  lastFocused = document.activeElement;
-  modal.classList.add('open');
-  modal.setAttribute('aria-hidden', 'false');
-  document.body.style.overflow = 'hidden';
-  setTimeout(() => modal.querySelector('.modal__close').focus(), 60);
-}
-
-function closeModal() {
-  modal.classList.remove('open');
-  modal.setAttribute('aria-hidden', 'true');
-  document.body.style.overflow = '';
-  if (lastFocused) lastFocused.focus();
-}
-
-modal.addEventListener('click', e => {
-  if (e.target.closest('[data-close]')) closeModal();
-});
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
-});
-
-/* ============================================================
-   SEARCH
-   ============================================================ */
-searchEl.addEventListener('input', e => {
-  keyword = e.target.value;
-  clearBtn.classList.toggle('show', keyword.length > 0);
-  renderGrid();
-});
-clearBtn.addEventListener('click', () => {
-  keyword = '';
-  searchEl.value = '';
-  clearBtn.classList.remove('show');
-  searchEl.focus();
-  renderGrid();
-});
-
-/* ============================================================
-   INIT
-   ============================================================ */
-document.getElementById('year').textContent = new Date().getFullYear();
-renderChips();
-renderGrid();
-</script>
-
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/app.js"></script>
 </body>
 </html>
