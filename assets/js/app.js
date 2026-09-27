@@ -15,10 +15,13 @@
   }
   function entityCard(e){
     const detailed=e.status==="detailed";
-    return '<article class="entity-card '+(detailed?'is-detailed':'')+'" data-entity="'+esc(e.id)+'" tabindex="0" role="button">'+
-      '<div class="entity-top"><span class="entity-id">'+esc(e.id)+'</span><span class="entity-state">'+(detailed?'HỒ SƠ CHI TIẾT':'CHỜ CẬP NHẬT')+'</span></div>'+
+    const links=e.links||[];
+    const stateLabel=detailed?"HỒ SƠ CHI TIẾT":e.status==="verified"?"ĐÃ XÁC MINH":e.status==="linked"?"CÓ DỮ LIỆU":"CHỜ CẬP NHẬT";
+    const stateClass=detailed?"is-detailed":e.status==="verified"?"is-verified":e.status==="linked"?"is-linked":"";
+    return '<article class="entity-card '+stateClass+'" data-entity="'+esc(e.id)+'" tabindex="0" role="button">'+
+      '<div class="entity-top"><span class="entity-id">'+esc(e.id)+'</span><span class="entity-state">'+stateLabel+'</span></div>'+
       '<h3>'+esc(e.name)+'</h3>'+
-      '<div class="entity-foot"><span>'+esc(e.kind)+'</span><span>'+(detailed?'24 hệ thống':'0 link')+'</span></div></article>';
+      '<div class="entity-foot"><span>'+esc(e.kind)+'</span><span>'+(detailed?'24 hệ thống':links.length+' link')+'</span></div></article>';
   }
   function bindCards(){
     $$(".entity-card").forEach(el=>{
@@ -42,13 +45,22 @@
   function openEntity(id){
     const e=REG.find(x=>x.id===id); if(!e) return;
     if(e.detailKey==="MAE"){ $("#maeProfile").scrollIntoView({behavior:"smooth",block:"start"}); return; }
-    $("#dialogBody").innerHTML='<div class="dialog-body"><div class="dialog-kicker">'+esc(e.id)+' · '+esc(e.kind)+'</div>'+
-      '<h2>'+esc(e.name)+'</h2>'+
-      '<p class="dialog-desc">Đầu mối đã được tạo trong registry quốc gia. Liên kết WebGIS, portal, API và metadata chi tiết sẽ được bổ sung ở các đợt cập nhật sau.</p>'+
-      '<div class="placeholder-note"><b>Trạng thái:</b> Chờ cập nhật dữ liệu.<br><b>Schema sẵn có:</b> tên hệ thống · URL · loại dịch vụ · nguồn · trạng thái · ngày kiểm tra.</div>'+
-      '<div class="dialog-actions" style="margin-top:16px"><button type="button" id="placeholderClose">Đóng</button></div></div>';
+    const links=e.links||[];
+    if(links.length){
+      $("#dialogBody").innerHTML='<div class="dialog-body"><div class="dialog-kicker">'+esc(e.id)+' · '+esc(e.kind)+'</div>'+
+        '<h2>'+esc(e.name)+'</h2>'+
+        '<p class="dialog-desc">'+(e.status==="verified"?'Nguồn công khai đã được đối chiếu với thông tin chính thức.':'Đã có nguồn công khai trong registry; một số metadata vẫn chờ kiểm chứng sâu.')+'</p>'+
+        links.map(l=>'<div class="source-card"><div class="source-card__top"><span class="type-badge '+esc((l.type||"").toLowerCase())+'">'+esc(TYPE_LABEL[l.type]||l.type||"LINK")+'</span><span class="source-state '+esc(l.status||"linked")+'">'+(l.status==="verified"?'ĐÃ XÁC MINH':'CÓ DỮ LIỆU')+'</span></div><h3>'+esc(l.title)+'</h3><div class="dialog-meta"><div><span>Đơn vị quản lý</span><b>'+esc(l.manager||"—")+'</b></div><div><span>Tên miền</span><b>'+esc(host(l.url))+'</b></div><div><span>Nguồn ghi nhận</span><b>'+esc(l.source||"—")+'</b></div><div><span>Kiểm tra</span><b>'+esc(l.lastChecked||"—")+'</b></div></div><p class="source-note">'+esc(l.note||"")+'</p><div class="dialog-actions"><a href="'+esc(l.url)+'" target="_blank" rel="noopener noreferrer">Mở hệ thống ↗</a>'+(l.sourceUrl&&l.sourceUrl!==l.url?'<a class="secondary-link" href="'+esc(l.sourceUrl)+'" target="_blank" rel="noopener noreferrer">Nguồn xác minh ↗</a>':'')+'</div></div>').join("")+
+        '</div>';
+    } else {
+      $("#dialogBody").innerHTML='<div class="dialog-body"><div class="dialog-kicker">'+esc(e.id)+' · '+esc(e.kind)+'</div>'+
+        '<h2>'+esc(e.name)+'</h2>'+
+        '<p class="dialog-desc">Đầu mối đã được tạo trong registry quốc gia. Liên kết WebGIS, portal, API và metadata chi tiết sẽ được bổ sung ở các đợt cập nhật sau.</p>'+
+        '<div class="placeholder-note"><b>Trạng thái:</b> Chờ cập nhật dữ liệu.<br><b>Schema sẵn có:</b> tên hệ thống · URL · loại dịch vụ · nguồn · trạng thái · ngày kiểm tra.</div>'+
+        '<div class="dialog-actions" style="margin-top:16px"><button type="button" id="placeholderClose">Đóng</button></div></div>';
+    }
     $("#detailDialog").showModal();
-    $("#placeholderClose").addEventListener("click",()=>$("#detailDialog").close());
+    const close=$("#placeholderClose"); if(close) close.addEventListener("click",()=>$("#detailDialog").close());
   }
 
   function maeRows(){
