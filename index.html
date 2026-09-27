@@ -1,1 +1,115 @@
-The requested file reference is not currently visible. Use files.search or files.list to rediscover the file, then retry with a returned ref_id or file_id.
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="GISMAP — danh bạ OSINT WebGIS công khai của 14 Bộ, 3 cơ quan ngang Bộ và 34 đơn vị hành chính cấp tỉnh.">
+  <meta name="theme-color" content="#f5f6f8">
+  <title>GISMAP · Vietnam Public WebGIS Registry</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body>
+  <a class="skip" href="#registry">Đi tới danh bạ</a>
+
+  <header class="sitebar">
+    <div class="sitebar__inner">
+      <a class="brand" href="./">
+        <span class="brand__mark">G</span>
+        <span><b>GISMAP</b><small>PUBLIC WEBGIS OSINT</small></span>
+      </a>
+      <nav class="sitebar__nav">
+        <button class="nav-link active" data-jump="ministries">Bộ ngành</button>
+        <button class="nav-link" data-jump="agencies">Cơ quan ngang Bộ</button>
+        <button class="nav-link" data-jump="localities">Địa phương</button>
+      </nav>
+      <div class="sitebar__status"><i></i> National registry · 51</div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="hero__copy">
+        <div class="eyebrow">VIETNAM · PUBLIC GEOSPATIAL OSINT</div>
+        <h1>Danh bạ WebGIS<br>cơ quan & địa phương</h1>
+        <p>Khung thống nhất để tổ chức các cổng WebGIS, dữ liệu không gian, dashboard, CSDL và dịch vụ bản đồ công khai. Bộ Nông nghiệp và Môi trường là hồ sơ chi tiết mẫu; các đầu mối còn lại đã được dựng sẵn để bổ sung dần.</p>
+      </div>
+      <aside class="hero__summary">
+        <div><strong>14</strong><span>Bộ</span></div>
+        <div><strong>03</strong><span>Cơ quan ngang Bộ</span></div>
+        <div><strong>34</strong><span>Tỉnh / thành phố</span></div>
+        <div><strong>01</strong><span>Hồ sơ chi tiết</span></div>
+      </aside>
+    </section>
+
+    <section class="toolbar" id="registry">
+      <label class="search">
+        <span>⌕</span>
+        <input id="globalSearch" type="search" placeholder="Tìm Bộ, cơ quan, tỉnh/thành…" autocomplete="off">
+        <button id="clearGlobal" type="button" aria-label="Xóa tìm kiếm">×</button>
+      </label>
+      <div class="view-switch" role="group" aria-label="Bộ lọc nhóm">
+        <button class="active" data-group="all">Tất cả</button>
+        <button data-group="ministry">Bộ</button>
+        <button data-group="agency">Cơ quan ngang Bộ</button>
+        <button data-group="locality">Địa phương</button>
+      </div>
+      <div class="count"><b id="globalCount">51</b> đầu mối</div>
+    </section>
+
+    <section class="registry-section" id="ministries" data-section="ministry">
+      <div class="section-head"><div><span class="section-kicker">CENTRAL · MINISTRIES</span><h2>14 Bộ</h2></div><p>Bộ Nông nghiệp và Môi trường đã có hồ sơ chi tiết.</p></div>
+      <div class="entity-grid" id="ministryGrid"></div>
+    </section>
+
+    <section class="registry-section" id="agencies" data-section="agency">
+      <div class="section-head"><div><span class="section-kicker">CENTRAL · MINISTERIAL-LEVEL AGENCIES</span><h2>3 cơ quan ngang Bộ</h2></div><p>Khung sẵn sàng để cập nhật WebGIS sau.</p></div>
+      <div class="entity-grid entity-grid--3" id="agencyGrid"></div>
+    </section>
+
+    <section class="registry-section" id="localities" data-section="locality">
+      <div class="section-head"><div><span class="section-kicker">PROVINCIAL LEVEL · 2025 BASELINE</span><h2>34 đơn vị hành chính cấp tỉnh</h2></div><p>28 tỉnh · 6 thành phố trực thuộc Trung ương.</p></div>
+      <div class="locality-tabs">
+        <button class="active" data-local-kind="all">Tất cả · 34</button>
+        <button data-local-kind="Tỉnh">Tỉnh · 28</button>
+        <button data-local-kind="Thành phố trực thuộc Trung ương">Thành phố · 6</button>
+      </div>
+      <div class="entity-grid entity-grid--local" id="localityGrid"></div>
+    </section>
+
+    <section class="mae-profile" id="maeProfile">
+      <div class="mae-profile__header">
+        <div><span class="section-kicker">DETAILED PROFILE · MAE</span><h2>Bộ Nông nghiệp và Môi trường</h2><p>Hồ sơ mẫu chi tiết nhất hiện tại, gồm 24 hệ thống thông tin, cơ sở dữ liệu, cổng không gian và nền tảng giám sát từ danh mục nguồn ban đầu.</p></div>
+        <div class="mae-profile__stats"><div><strong id="maeSystems">24</strong><span>Hệ thống</span></div><div><strong id="maeCats">11</strong><span>Lĩnh vực</span></div><div><strong id="maeGeo">06</strong><span>Không gian / giám sát</span></div></div>
+      </div>
+
+      <div class="mae-tools">
+        <label class="search search--small"><span>⌕</span><input id="maeSearch" type="search" placeholder="Tìm trong Bộ Nông nghiệp và Môi trường…"></label>
+        <select id="maeType"><option value="all">Tất cả loại</option><option value="WEBGIS">WebGIS</option><option value="GEOSPATIAL">Không gian / SDI</option><option value="MONITORING">Giám sát / cảnh báo</option><option value="DATABASE">Cơ sở dữ liệu</option><option value="PORTAL">Cổng thông tin</option></select>
+        <div class="count"><b id="maeCount">24</b> / 24</div>
+      </div>
+      <div class="chips" id="maeChips"></div>
+
+      <div class="section-head section-head--sub"><div><span class="section-kicker">VISUAL INDEX</span><h3>Danh mục hệ thống</h3></div><p>Nhấn banner để xem hồ sơ nguồn.</p></div>
+      <div class="logo-grid" id="maeLogoGrid"></div>
+
+      <div class="section-head section-head--sub"><div><span class="section-kicker">OSINT REGISTER</span><h3>Hồ sơ nguồn công khai</h3></div><p>Trạng thái hiện tại: dữ liệu khởi tạo, chưa xác minh đồng loạt.</p></div>
+      <div class="register" id="maeRegister"></div>
+    </section>
+
+    <section class="method">
+      <div><span class="section-kicker">DATA MODEL</span><h2>Chuẩn cập nhật tiếp theo</h2></div>
+      <div class="method__grid"><article><b>01</b><h3>Entity</h3><p>Mỗi Bộ, cơ quan hoặc địa phương có ID cố định.</p></article><article><b>02</b><h3>Link</h3><p>Mỗi đơn vị có thể chứa nhiều WebGIS, portal hoặc API.</p></article><article><b>03</b><h3>Verify</h3><p>Lưu trạng thái truy cập, nguồn và ngày kiểm tra.</p></article><article><b>04</b><h3>Extend</h3><p>Bổ sung dữ liệu không làm thay đổi giao diện lõi.</p></article></div>
+    </section>
+
+    <footer class="foot"><span>GISMAP · National Public WebGIS Registry</span><span>Baseline 2026-09-27</span></footer>
+  </main>
+
+  <dialog id="detailDialog"><div class="dialog"><button class="dialog__close" id="dialogClose">×</button><div id="dialogBody"></div></div></dialog>
+  <script src="assets/js/registry-data.js"></script>
+  <script src="assets/js/mae-data.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
