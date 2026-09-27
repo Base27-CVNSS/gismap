@@ -13,18 +13,28 @@
     return REG.filter(e => (group==="all" || e.group===group) &&
       (!t || [e.name,e.id,e.kind].join(" ").toLocaleLowerCase("vi").includes(t)));
   }
-  function entityCard(e){
+  function entityRow(e){
     const detailed=e.status==="detailed";
     const links=e.links||[];
     const stateLabel=detailed?"HỒ SƠ CHI TIẾT":e.status==="verified"?"ĐÃ XÁC MINH":e.status==="linked"?"CÓ DỮ LIỆU":"CHỜ CẬP NHẬT";
     const stateClass=detailed?"is-detailed":e.status==="verified"?"is-verified":e.status==="linked"?"is-linked":"";
-    return '<article class="entity-card '+stateClass+'" data-entity="'+esc(e.id)+'" tabindex="0" role="button">'+
-      '<div class="entity-top"><span class="entity-id">'+esc(e.id)+'</span><span class="entity-state">'+stateLabel+'</span></div>'+
-      '<h3>'+esc(e.name)+'</h3>'+
-      '<div class="entity-foot"><span>'+esc(e.kind)+'</span><span>'+(detailed?'24 hệ thống':links.length+' link')+'</span></div></article>';
+    const sourceCount=detailed?"24 hệ thống":links.length?links.length+" nguồn":"—";
+    const lastChecked=links.map(x=>x.lastChecked).filter(Boolean).sort().reverse()[0] || (detailed?(window.MAE_OSINT_META?.baseline||"2026-09-27"):"—");
+    return '<div class="registry-row '+stateClass+'" data-entity="'+esc(e.id)+'" tabindex="0" role="button">'+
+      '<div class="registry-id">'+esc(e.id)+'</div>'+
+      '<div class="registry-name"><b>'+esc(e.name)+'</b><span>'+esc(e.kind)+'</span></div>'+
+      '<div class="registry-kind">'+esc(e.kind)+'</div>'+
+      '<div class="registry-state"><i></i>'+stateLabel+'</div>'+
+      '<div class="registry-sources">'+esc(sourceCount)+'</div>'+
+      '<div class="registry-date">'+esc(lastChecked)+'</div>'+
+    '</div>';
   }
-  function bindCards(){
-    $$(".entity-card").forEach(el=>{
+  function registryTable(rows){
+    return '<div class="registry-head"><div>Mã</div><div>Đơn vị</div><div>Loại</div><div>Trạng thái</div><div>Nguồn</div><div>Cập nhật</div></div>'+
+      rows.map(entityRow).join("");
+  }
+  function bindRegistryRows(){
+    $$(".registry-row").forEach(el=>{
       const open=()=>openEntity(el.dataset.entity);
       el.addEventListener("click",open);
       el.addEventListener("keydown",ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();open();}});
@@ -37,10 +47,10 @@
       const sec=$('[data-section="'+g+'"]');
       if(sec) sec.classList.toggle("hidden-section",group!=="all"&&group!==g);
     });
-    $("#ministryGrid").innerHTML=rows.filter(e=>e.group==="ministry").map(entityCard).join("");
-    $("#agencyGrid").innerHTML=rows.filter(e=>e.group==="agency").map(entityCard).join("");
-    $("#localityGrid").innerHTML=rows.filter(e=>e.group==="locality"&&(localKind==="all"||e.kind===localKind)).map(entityCard).join("");
-    bindCards();
+    $("#ministryGrid").innerHTML=registryTable(rows.filter(e=>e.group==="ministry"));
+    $("#agencyGrid").innerHTML=registryTable(rows.filter(e=>e.group==="agency"));
+    $("#localityGrid").innerHTML=registryTable(rows.filter(e=>e.group==="locality"&&(localKind==="all"||e.kind===localKind)));
+    bindRegistryRows();
   }
   function openEntity(id){
     const e=REG.find(x=>x.id===id); if(!e) return;
