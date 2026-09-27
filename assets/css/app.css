@@ -182,7 +182,7 @@ a{color:inherit}
 .logo-cell:hover .logo-cell__num,.logo-cell:hover .logo-cell__type{opacity:1}
 
 .register{border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.register-head,.register-row{display:grid;grid-template-columns:66px minmax(250px,1.5fr) minmax(160px,.7fr) 110px 120px;align-items:center}
+.register-head,.register-row{display:grid;grid-template-columns:66px minmax(250px,1.5fr) minmax(150px,.7fr) 105px 105px 100px;align-items:center}
 .register-head{min-height:36px;background:#f8f9fb;border-bottom:1px solid var(--line);font-size:8px;font-weight:700;letter-spacing:.08em;color:#8f9aa6;text-transform:uppercase}
 .register-head>*{padding:0 11px}
 .register-row{min-height:58px;background:#fff;border-bottom:1px solid #edf0f3;cursor:pointer;transition:.12s}
@@ -191,7 +191,7 @@ a{color:inherit}
 .register-row>*{padding:9px 11px;min-width:0}
 .reg-id{font-size:8px;font-weight:700;color:#9aa6b2}
 .reg-title b{display:block;font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:650}
-.reg-title span,.reg-field,.reg-status{font-size:8.5px;color:var(--muted)}
+.reg-title span,.reg-field,.reg-status,.reg-date{font-size:8.5px;color:var(--muted)}
 .type-badge{display:inline-flex;padding:3px 6px;border:1px solid var(--line);border-radius:4px;font-size:7px;font-weight:700;color:#64748b}
 .type-badge.webgis,.type-badge.geospatial{color:var(--accent);border-color:var(--accent-line);background:#f4fbfa}
 
@@ -245,8 +245,8 @@ dialog::backdrop{background:rgba(16,24,40,.34);backdrop-filter:blur(4px)}
   .hero{grid-template-columns:1fr;gap:34px}.hero__summary{max-width:600px}
   .entity-grid,.entity-grid--local{grid-template-columns:repeat(3,1fr)}
   .mae-profile__header{grid-template-columns:1fr}
-  .register-head,.register-row{grid-template-columns:60px 1.5fr .7fr 100px}
-  .register-head>:last-child,.register-row>:last-child{display:none}
+  .register-head,.register-row{grid-template-columns:60px 1.5fr .7fr 100px 96px}
+  .register-head>div:nth-child(6),.register-row>div:nth-child(6){display:none}
   .method{grid-template-columns:1fr}.method__grid{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:760px){
@@ -258,7 +258,7 @@ dialog::backdrop{background:rgba(16,24,40,.34);backdrop-filter:blur(4px)}
   .section-head{flex-direction:column;align-items:flex-start;gap:5px}.section-head p{text-align:left}
   .mae-profile{padding:18px;margin-left:-4px;margin-right:-4px}.mae-tools{flex-wrap:wrap}
   .logo-grid{grid-template-columns:repeat(2,1fr);grid-auto-rows:68px}
-  .register-head{display:none}.register-row{grid-template-columns:54px 1fr 90px}.register-row>.reg-field,.register-row>.reg-status{display:none}
+  .register-head{display:none}.register-row{grid-template-columns:54px 1fr 90px}.register-row>.reg-field,.register-row>.reg-status,.register-row>.reg-date{display:none}
   .method__grid{grid-template-columns:1fr}.method__grid article{border-right:0;border-bottom:1px solid var(--line)}
   .foot{flex-direction:column;gap:4px}
 }
@@ -371,3 +371,5 @@ body{font-size:var(--fs-body);font-family:var(--font)}
   .registry-head,.registry-row{min-width:620px;grid-template-columns:66px minmax(230px,1.8fr) 120px 130px 74px}
   .hero h1{font-size:34px}
 }
+
+.reg-date{font-variant-numeric:tabular-nums;white-space:nowrap}
